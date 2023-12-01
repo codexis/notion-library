@@ -6,9 +6,6 @@ import requests
 
 class Notion:
     """Notion API class"""
-    # ToDo
-    # - add book page creating
-    #   with book_edition_page link included
 
     API_URL = "https://api.notion.com"
     API_VERSION = "2022-06-28"
@@ -24,8 +21,6 @@ class Notion:
 
     def create_book_edition_page(self, data: dict):
         """creating a book edition"""
-        # ToDo
-        # - add book icon
 
         return self.create_page({
             "parent": {"database_id": self.database_id},

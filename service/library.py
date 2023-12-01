@@ -13,10 +13,14 @@ livelib = LiveLib()
 
 
 class Library:
-    """Library Service class"""
+    """ Library Service class """
 
-    def get_book(self, book_id: int):
+    @staticmethod
+    def get_book(book_id: int):
+        """ getting book data by book_id """
         return livelib.get_book_data(book_id)
 
-    def export_book(self, book_data: dict):
+    @staticmethod
+    def export_book(book_data: dict):
+        """ export book to notion """
         return notion.create_book_edition_page(book_data)

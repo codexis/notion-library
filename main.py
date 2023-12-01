@@ -7,12 +7,16 @@ library = Library()
 
 
 class App(ctk.CTk):
+    """ App Window Main class """
+
+    app_title = "Notion Library"
+
     def __init__(self):
         super().__init__()
         self.geometry("800x600")
-        self.title("Notion Library")
+        self.title(self.app_title)
 
-        self.top_label = ctk.CTkLabel(master=self, width=200, height=100, text="Notion Library Exporter")
+        self.top_label = ctk.CTkLabel(master=self, width=200, height=100, text=self.app_title)
         self.top_label.grid(row=0, column=1, sticky="nsew")
 
         self.link_label = ctk.CTkLabel(master=self, width=150, text="Book ID to export")
@@ -28,8 +32,8 @@ class App(ctk.CTk):
         self.status_label = ctk.CTkLabel(master=self, width=550, text="", justify="left")
         self.status_label.grid(row=2, column=0, columnspan=3, sticky="nsew", padx=20, pady=20)
 
-    # add methods to app
     def export_book(self):
+        """ Export button callback """
         book_id = int(self.link_entry.get())
         book_data = library.get_book(book_id)
 
