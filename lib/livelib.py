@@ -1,5 +1,4 @@
-"""Module providing a livelib parser methods"""
-
+""" Module providing a livelib parser methods """
 import requests
 from bs4 import BeautifulSoup
 

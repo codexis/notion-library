@@ -1,9 +1,7 @@
-"""Module providing a Notion API methods"""
-import requests
-
-
+""" Module providing a Notion API methods """
 # @see API Documentation: https://developers.notion.com/reference/retrieve-a-database
 # @see API Integrations: https://www.notion.so/my-integrations
+import requests
 
 
 class Notion:
