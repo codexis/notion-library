@@ -44,7 +44,7 @@ class CacheImage:
         try:
             with open(image_path, 'wb') as f:
                 f.write(image_content)
-        except Exception as e:
+        except OSError as e:
             print(f'Error saving image: {e}')
 
     def get_image_path(self, image_name: str) -> str:

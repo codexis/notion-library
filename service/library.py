@@ -33,7 +33,10 @@ class Library:
         book_data['link'] = book_link_url
 
         # Download and cache image
-        book_data['image_name'] = loader.download_and_cache_image(book_data['image_url'], book_data['title_orig'])
+        book_data['image_name'] = loader.download_and_cache_image(
+            book_data['image_url'],
+            book_data['title']
+        )
 
         # Store the book data for later use
         self.current_book_data = book_data
