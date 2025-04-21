@@ -1,9 +1,8 @@
 """ Main window Python script of the Library Project """
-from dotenv import load_dotenv
 import json
 import customtkinter as ctk
+from dotenv import load_dotenv
 from PIL import Image, ImageTk
-
 from infrastructure.cache.cache_image import CacheImage
 from service.library import Library
 

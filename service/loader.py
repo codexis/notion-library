@@ -1,9 +1,9 @@
 """ Module providing a livelib parser methods """
 import os
+import re
+import hashlib
 import requests
 from bs4 import BeautifulSoup
-import hashlib
-import re
 from infrastructure.cache.cache_page import CachePage
 from infrastructure.cache.cache_image import CacheImage
 

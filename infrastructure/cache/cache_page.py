@@ -1,4 +1,12 @@
+"""
+Module for caching web pages.
 
+Caches HTML content using MD5 hashed URLs as filenames.
+Cache is stored in the 'cache' directory at the project root.
+
+Classes:
+    CachePage: Handles web page caching operations.
+"""
 import hashlib
 import os
 import os.path
@@ -6,10 +14,17 @@ import requests
 
 
 class CachePage:
-    """Cache pages class"""
+    """Class for caching and retrieving web page content."""
 
     def get(self, url: str) -> str|None:
-        """check book_link_url is a mif page"""
+        """Retrieve cached HTML content for a given URL.
+
+        Args:
+            url: The URL of the web page to retrieve from cache.
+
+        Returns:
+            The cached HTML content as a string, or None if not found.
+        """
 
         url_hash = self.get_url_hash(url)
         cache_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../cache")
@@ -27,7 +42,12 @@ class CachePage:
         return None
 
     def save(self, url: str, html_content:str):
-        """save data to cache"""
+        """Save HTML content to cache for a given URL.
+
+        Args:
+            url: The URL of the web page to cache.
+            html_content: The HTML content to save.
+        """
 
         url_hash = self.get_url_hash(url)
 
@@ -43,8 +63,15 @@ class CachePage:
         except requests.RequestException as e:
             print(f"Ошибка при скачивании: {e}")
 
-
         return None
 
     def get_url_hash(self, url: str) -> str:
+        """Generate MD5 hash for a URL.
+
+        Args:
+            url: The URL to hash.
+
+        Returns:
+            MD5 hash of the URL as a hexadecimal string.
+        """
         return hashlib.md5(url.encode()).hexdigest()
