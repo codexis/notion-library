@@ -13,11 +13,11 @@ class Notion:
     api_token = ''
     database_id = ''
 
-    def set_config(self, config: dict):
+    def set_config(self):
         """setting a config"""
 
-        self.api_token = config['api_token']
-        self.database_id = config['database_id']
+        self.api_token = os.environ.get('NOTION_API_KEY', None)
+        self.database_id = os.environ.get('NOTION_DATABASE_ID', None)
 
     def create_book_edition_page(self, data: dict):
         """creating a book edition"""

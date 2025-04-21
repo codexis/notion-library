@@ -1,2 +1,4 @@
+.env
 .idea
+cache
 config/config.ini
