@@ -27,10 +27,8 @@ class Mif:
 
         title_ru = product_data['baseData']['title']
         slogan_ru = product_data['baseData']['titleInList']
-        image_url = self.API_URL + product_data['baseData']['cover']['large']
-
+        authors_ru_data = product_data['baseData']['authors']
         # category_ru = product_data['baseData']['category']['name']
-        # authors_ru_data = product_data['baseData']['authors']
         # authors_ru = [author['name'] for author in authors_ru_data]
 
         title_orig = product_data['dataInOriginalLanguage']['title'] if product_data['dataInOriginalLanguage'] else title_ru
@@ -49,6 +47,7 @@ class Mif:
         parsed_release_params = self.parse_release_parameters(release_parameters)
 
         # Download and cache image
+        image_url = self.API_URL + product_data['baseData']['cover']['large']
         image_name = loader.download_and_cache_image(image_url, title_orig)
 
         # div_cover = soup.find('div', {

@@ -1,15 +1,16 @@
 """ Library Service  """
 from configparser import ConfigParser
+
+from infrastructure.cache.cache_image import CacheImage
 from lib.livelib import LiveLib
 from lib.mif import Mif
 from lib.notion import Notion
 from lib.obsidian import Obsidian
-from service.cache import Cache
 
 config_object = ConfigParser()
 config_object.read("config/config.ini")
 
-cache = Cache()
+cache_image = CacheImage()
 livelib = LiveLib()
 mif = Mif()
 
@@ -46,7 +47,7 @@ class Library:
 
         return obsidian.save_to_notes(
             self.current_book_data,
-            cache.get_image(self.current_book_data['image_name'])
+            cache_image.get(self.current_book_data['image_name'])
         )
 
     @staticmethod

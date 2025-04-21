@@ -1,15 +1,16 @@
 """ Main window Python script of the Library Project """
+from dotenv import load_dotenv
 import json
-import os
 import customtkinter as ctk
 from PIL import Image, ImageTk
+
+from infrastructure.cache.cache_image import CacheImage
 from service.library import Library
-from service.cache import Cache
-from dotenv import load_dotenv
+
 
 load_dotenv()
 library = Library()
-cache = Cache()
+cache_image = CacheImage()
 
 class App(ctk.CTk):
     """ App Window Main class """
@@ -128,7 +129,7 @@ class App(ctk.CTk):
 
     def display_book_image(self, image_name):
         """ Display book cover image """
-        image_path = cache.get_image(image_name)
+        image_path = cache_image.get(image_name)
 
         print(f'image_path: {image_path}')
 

@@ -4,23 +4,26 @@ import requests
 from bs4 import BeautifulSoup
 import hashlib
 import re
-from service.cache import Cache
+from infrastructure.cache.cache_page import CachePage
+from infrastructure.cache.cache_image import CacheImage
 
-cache = Cache()
+
+cache_page = CachePage()
+cache_image = CacheImage()
 
 class Loader:
     """Loader pages class"""
 
     def get_book_page(self, page_url: str):
         """getting a page data by book_id"""
-        html = cache.get(page_url)
+        html = cache_page.get(page_url)
         if html is None:
             print('Downloading page')
             page = requests.get(page_url, timeout=10)
             html = page.content.decode("utf-8")
 
             if self.validate(page_url, html):
-                cache.save(page_url, html)
+                cache_page.save(page_url, html)
 
         else:
             print('From cache!')
@@ -79,12 +82,12 @@ class Loader:
         # Create image filename
         image_name = f"{clean_title}{ext}"
 
-        # Check if an image already exists in cache
-        if cache.get_image(image_name) is None:
+        # Check if an image already exists in the cache
+        if cache_image.get(image_name) is None:
             print(f'Downloading image: {image_name}')
             image_content = self.download_image(image_url)
             if image_content:
-                cache.save_image(image_name, image_content)
+                cache_image.save(image_name, image_content)
         else:
             print(f'Image already in cache: {image_name}')
 
