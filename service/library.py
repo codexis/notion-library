@@ -3,7 +3,7 @@ from infrastructure.cache.cache_image import CacheImage
 from lib.livelib import LiveLib
 from infrastructure.external.mif_client import MifClient
 from lib.notion import Notion
-from lib.obsidian import Obsidian
+from infrastructure.external.obsidian_client import ObsidianClient
 from service.loader import Loader
 
 cache_image = CacheImage()
@@ -46,10 +46,10 @@ class Library:
     def save_to_notes(self) -> str:
         """ Save book data to a Markdown file """
 
-        obsidian = Obsidian()
-
         if not self.current_book_data:
             return "No book data to save"
+
+        obsidian = ObsidianClient()
 
         return obsidian.save_to_notes(
             self.current_book_data,
