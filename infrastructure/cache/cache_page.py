@@ -37,7 +37,6 @@ class CachePage:
                 return html_content
             except Exception as e:
                 print(f"Ошибка при чтении файла: {e}")
-                return None
 
         return None
 
