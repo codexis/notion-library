@@ -10,14 +10,14 @@ Classes:
 """
 from domain.service.loader_service import LoaderService
 from infrastructure.cache.cache_image import CacheImage
-from lib.livelib import LiveLib
+from infrastructure.external.livelib_client import LiveLibClient
 from infrastructure.external.mif_client import MifClient
-from lib.notion import Notion
+from infrastructure.external.notion_client import NotionClient
 from infrastructure.external.obsidian_client import ObsidianClient
 
 cache_image = CacheImage()
 loader_service = LoaderService()
-livelib = LiveLib()
+livelib = LiveLibClient()
 mif = MifClient()
 
 
@@ -43,7 +43,8 @@ class LibraryService:
             html = loader_service.get_book_page(book_link_url, mif.validate)
             book_data = mif.parse_book_data_from_html(html)
         elif livelib.check_page_url(book_link_url):
-            book_data = livelib.get_book_data(book_link_url)
+            html = loader_service.get_book_page(book_link_url, None)
+            book_data = livelib.get_book_data(html)
         else:
             return None
 
@@ -88,6 +89,6 @@ class LibraryService:
             str: URL of the created Notion page
         """
 
-        notion = Notion()
+        notion = NotionClient()
 
         return notion.create_book_edition_page(book_data)

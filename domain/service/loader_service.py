@@ -37,7 +37,7 @@ class LoaderService:
             return html
 
         html = loader_client.download_page(page_url)
-        if html and validation(page_url, html):
+        if html and (validation is not None and validation(page_url, html)):
             cache_page.save(page_url, html)
             return html
 

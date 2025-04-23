@@ -6,7 +6,7 @@ import os
 import requests
 
 
-class Notion:
+class NotionClient:
     """Notion API class"""
 
     API_URL = "https://api.notion.com"

@@ -1,17 +1,16 @@
 """ Module providing a livelib parser methods """
-import requests
 from bs4 import BeautifulSoup
 
 
-class LiveLib:
+class LiveLibClient:
     """LiveLib Parser class"""
 
     API_URL = "https://www.livelib.ru"
 
-    def get_book_data(self, book_id: int):
+    def get_book_data(self, html: str):
         """getting a book info by book_id"""
 
-        soup = self.get_book_page_data(book_id)
+        soup = BeautifulSoup(html, 'html.parser')
 
         title = soup.find('h1', {
             'class': 'bc__book-title'
@@ -49,19 +48,8 @@ class LiveLib:
             'year': year,
             'isbn': isbn,
             'image_url': image_url,
-            'link': self.get_book_page_url(book_id),
         }
 
-    def get_book_page_data(self, book_id: int):
-        """getting a page data by book_id"""
-
-        page_url = self.get_book_page_url(book_id)
-        page = requests.get(page_url, timeout=10)
-        html = page.content.decode("utf-8")
-
-        return BeautifulSoup(html, 'html.parser')
-
-    def get_book_page_url(self, book_id: int):
-        """construct page_url of a book by book_id"""
-
-        return self.API_URL + "/book/" + str(book_id)
+    def check_page_url(self, book_link_url: str) -> bool:
+        """check book_link_url is a mif page"""
+        return book_link_url.startswith(self.API_URL)
