@@ -58,7 +58,7 @@ class LoaderClient:
         try:
             response = requests.get(url, timeout=10)
         except requests.exceptions.RequestException as e:
-            raise DownloadError(f'Download error: {e}')
+            raise DownloadError(f'Download error: {e}') from e
 
         if response.status_code != 200:
             raise DownloadError(f'Download error: {response.status_code}')

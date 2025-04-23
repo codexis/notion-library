@@ -36,7 +36,8 @@ class LibraryService:
             book_link_url (str): URL of the book page
 
         Returns:
-            dict: Book data including title, author, and image information, or None if URL not supported
+            dict: Book data including title, author, and image information,
+                  or None if URL is not supported
         """
 
         if mif.check_page_url(book_link_url):
