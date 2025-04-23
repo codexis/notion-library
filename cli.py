@@ -1,7 +1,7 @@
 """ Console Python script of the Library Project """
-from service.library import Library
+from domain.service.library_service import LibraryService
 
-library = Library()
+library = LibraryService()
 
 if __name__ == '__main__':
     BOOK_LINK_URL = 'https://www.mann-ivanov-ferber.ru/catalog/product/kak-delat-poleznye-zametki/'

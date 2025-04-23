@@ -22,3 +22,8 @@ class DirNotExists(Exception):
                           of the directory that doesn't exist.
         """
         super().__init__(message)
+
+
+class DownloadError(Exception):
+    def __init__(self, message: str):
+        super().__init__(message)

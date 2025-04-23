@@ -37,7 +37,7 @@ class ObsidianClient:
         # Read a template file
         try:
             with open(self.BOOK_TEMPLATE_FILE_PATH, "r", encoding="utf-8") as template_file:
-                template = template_file.read()
+                template_content = template_file.read()
         except (OSError, UnicodeDecodeError) as e:
             return f"Error reading template file: {e}"
 
@@ -52,9 +52,8 @@ class ObsidianClient:
             "{{book_page_url}}": book_data.get('link', '')
         }
 
-        template_content = ""
         for placeholder, value in replacements.items():
-            template_content = template.replace(placeholder, value)
+            template_content = template_content.replace(placeholder, value)
 
         try:
             book_file_path = self._build_book_file_path(book_data)

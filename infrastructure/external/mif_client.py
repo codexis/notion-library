@@ -69,7 +69,7 @@ class MifClient:
 
         # Parse release parameters to extract year, pages, and ISBN
         release_parameters = product['releaseParameters']
-        parsed_release_params = self.parse_release_parameters(release_parameters)
+        parsed_release_params = self._parse_release_parameters(release_parameters)
 
         image_url = self.API_URL + product['baseData']['cover']['large']
 
@@ -100,7 +100,7 @@ class MifClient:
             'image_url': image_url,
         }
 
-    def parse_release_parameters(self, release_parameters: str) -> dict:
+    def _parse_release_parameters(self, release_parameters: str) -> dict:
         """Extract publication details from book release HTML.
 
         Args:
@@ -166,3 +166,23 @@ class MifClient:
             bool: True if the URL is from the MIF website, False otherwise.
         """
         return book_link_url.startswith(self.API_URL)
+
+    def validate(self, book_link_url: str, html_content: str) -> bool:
+        """Validate if the HTML content is a valid MIF book page.
+
+        Args:
+            book_link_url (str): URL of the book page to validate.
+            html_content (str): HTML content of the page to validate.
+
+        Returns:
+            bool: True if the content is valid or if URL is not from MIF, False otherwise.
+        """
+        if self.check_page_url(book_link_url):
+            soup = BeautifulSoup(html_content, 'html.parser')
+            divs = soup.find('div', {
+                'data-fixed-menu-selector': 'COVER'
+            }).findAll('div')
+
+            return divs is not None
+
+        return True

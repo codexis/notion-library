@@ -1,29 +1,46 @@
-""" Library Service  """
+"""
+Library service module for managing book data from different sources.
+
+This module provides functionality for retrieving book information from various
+online sources, caching book images, and exporting book data to different
+note-taking applications.
+
+Classes:
+    LibraryService: Core service for book data retrieval and management.
+"""
+from domain.service.loader_service import LoaderService
 from infrastructure.cache.cache_image import CacheImage
 from lib.livelib import LiveLib
 from infrastructure.external.mif_client import MifClient
 from lib.notion import Notion
 from infrastructure.external.obsidian_client import ObsidianClient
-from service.loader import Loader
 
 cache_image = CacheImage()
-loader = Loader()
+loader_service = LoaderService()
 livelib = LiveLib()
 mif = MifClient()
 
 
-class Library:
-    """ Library Service class """
+class LibraryService:
+    """Core service for retrieving, storing, and exporting book data."""
 
     def __init__(self):
+        """Initialize the library service with empty book data."""
         super().__init__()
         self.current_book_data = None
 
     def get_book(self, book_link_url: str):
-        """ getting book data by book_id """
+        """Retrieve book data from supported online sources.
+
+        Args:
+            book_link_url (str): URL of the book page
+
+        Returns:
+            dict: Book data including title, author, and image information, or None if URL not supported
+        """
 
         if mif.check_page_url(book_link_url):
-            html = loader.get_book_page(book_link_url)
+            html = loader_service.get_book_page(book_link_url, mif.validate)
             book_data = mif.parse_book_data_from_html(html)
         elif livelib.check_page_url(book_link_url):
             book_data = livelib.get_book_data(book_link_url)
@@ -33,7 +50,7 @@ class Library:
         book_data['link'] = book_link_url
 
         # Download and cache image
-        book_data['image_name'] = loader.download_and_cache_image(
+        book_data['image_name'] = loader_service.download_and_cache_image(
             book_data['image_url'],
             book_data['title']
         )
@@ -44,7 +61,11 @@ class Library:
         return book_data
 
     def save_to_notes(self) -> str:
-        """ Save book data to a Markdown file """
+        """Save current book data to a Markdown file using Obsidian.
+
+        Returns:
+            str: Path to the saved file or error message
+        """
 
         if not self.current_book_data:
             return "No book data to save"
@@ -58,7 +79,14 @@ class Library:
 
     @staticmethod
     def export_book(book_data: dict):
-        """ export book to the Notion """
+        """Export book data to a Notion database.
+
+        Args:
+            book_data (dict): Dictionary containing book information
+
+        Returns:
+            str: URL of the created Notion page
+        """
 
         notion = Notion()
 

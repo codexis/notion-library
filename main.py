@@ -4,11 +4,11 @@ import customtkinter as ctk
 from dotenv import load_dotenv
 from PIL import Image, ImageTk
 from infrastructure.cache.cache_image import CacheImage
-from service.library import Library
+from domain.service.library_service import LibraryService
 
 
 load_dotenv()
-library = Library()
+library = LibraryService()
 cache_image = CacheImage()
 
 class App(ctk.CTk):
