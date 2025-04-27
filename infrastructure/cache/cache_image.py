@@ -14,6 +14,8 @@ import os.path
 class CacheImage:
     """Class for caching and retrieving images."""
 
+    CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../storage/cache/image")
+
     def get(self, image_name: str) -> str|None:
         """Retrieve an image path from the cache if it exists.
 
@@ -56,8 +58,7 @@ class CacheImage:
         Returns:
             Full path to the image in the cache directory.
         """
-        cache_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../cache")
-        if not os.path.exists(cache_dir):
-            os.makedirs(cache_dir)
+        if not os.path.exists(self.CACHE_DIR):
+            os.makedirs(self.CACHE_DIR)
 
-        return os.path.join(cache_dir, image_name)
+        return os.path.join(self.CACHE_DIR, image_name)

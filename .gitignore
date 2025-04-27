@@ -1,4 +1,4 @@
 .env
 .idea
-cache
+infrastructure/storage/cache
 config/config.ini

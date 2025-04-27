@@ -16,7 +16,7 @@ import requests
 class CachePage:
     """Class for caching and retrieving web page content."""
 
-    CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../cache")
+    CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../storage/cache/page")
 
     def get(self, url: str) -> str|None:
         """Retrieve cached HTML content for a given URL.
