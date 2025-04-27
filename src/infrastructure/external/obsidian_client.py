@@ -12,7 +12,7 @@ import shutil
 from src.domain.exception.library_exceptions import DirNotExists
 
 
-class ObsidianClient:
+class ObsidianClient: # pylint: disable=too-few-public-methods
     """Client for creating and managing book notes in Obsidian format."""
 
     BOOKS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../storage/books")

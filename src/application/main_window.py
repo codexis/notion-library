@@ -85,7 +85,9 @@ class App(ctk.CTk):
 
             print(f"Previewed book: {book_data.get('title_clean', 'Unknown title')}")
         else:
-            self.ui.status_label.configure(text="Could not retrieve book data. Please check the URL.")
+            self.ui.status_label.configure(
+                text="Could not retrieve book data. Please check the URL."
+            )
             # Hide the Save to Notes button if no book data
             self.ui.save_button.grid_remove()
 
@@ -184,7 +186,7 @@ class App(ctk.CTk):
         print(result_message)
 
 
-class AppUI:
+class AppUI: # pylint: disable=too-few-public-methods
     """User interface component class for the Library application.
 
     Manages UI elements, their layout, and visual presentation.
