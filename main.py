@@ -85,7 +85,7 @@ class App(ctk.CTk):
             # Show the Save to Notes button
             self.save_button.grid()
 
-            print(f"Previewed book: {book_data.get('title', '')}")
+            print(f"Previewed book: {book_data.get('title_clean', 'Unknown title')}")
         else:
             self.status_label.configure(text="Could not retrieve book data. Please check the URL.")
             # Hide the Save to Notes button if no book data
@@ -98,6 +98,8 @@ class App(ctk.CTk):
         # Add title
         if 'title' in book_data:
             table += f"Title: {book_data['title']}\n"
+        if 'title_clean' in book_data:
+            table += f"Title (clean): {book_data['title_clean']}\n"
 
         # Add authors
         if 'authors' in book_data and book_data['authors']:

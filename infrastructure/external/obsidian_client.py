@@ -98,7 +98,7 @@ class ObsidianClient:
         Returns:
             Formatted string with the Russian title as an alias or empty string if not available
         """
-        return "\n  - " + book_data.get('title_ru', '') \
+        return "\n  - \"" + book_data.get('title_ru', '') + "\"" \
             if book_data.get('title_ru', []) \
             else ""
 
@@ -106,14 +106,13 @@ class ObsidianClient:
         """Constructs the file path for the book's Markdown file.
 
         Args:
-            book_data: Dictionary containing book metadata including 'title'
+            book_data: Dictionary containing book metadata including 'title_clean'
 
         Returns:
             Full path to the Markdown file for the book
         """
-        title = book_data.get('title', 'unknown')
-        clean_title = title.replace(':', '-').replace('/', '-').replace('\\', '-')
-        filename = f"{clean_title}.md"
+        title_clean = book_data.get('title_clean', 'unknown')
+        filename = f"{title_clean}.md"
 
         books_dir = self._get_books_dir()
 

@@ -8,6 +8,7 @@ note-taking applications.
 Classes:
     LibraryService: Core service for book data retrieval and management.
 """
+import re
 from domain.service.loader_service import LoaderService
 from infrastructure.cache.cache_image import CacheImage
 from infrastructure.external.livelib_client import LiveLibClient
@@ -50,11 +51,12 @@ class LibraryService:
             return None
 
         book_data['link'] = book_link_url
+        book_data['title_clean'] = self._get_clean_title(book_data['title'])
 
         # Download and cache image
         book_data['image_name'] = loader_service.download_and_cache_image(
             book_data['image_url'],
-            book_data['title']
+            book_data['title_clean']
         )
 
         # Store the book data for later use
@@ -93,3 +95,25 @@ class LibraryService:
         notion = NotionClient()
 
         return notion.create_book_edition_page(book_data)
+
+    def _get_clean_title(self, title: str) -> str:
+        """Sanitizes a title for use as a filename.
+
+        Args:
+            title: Original title to sanitize
+
+        Returns:
+            Sanitized string safe for use as a filename
+        """
+        # Replace colons with hyphens
+        title = title.replace(':', '-')
+        # Keep only allowed characters
+        title = re.sub(r'[^\w\d\(\)\.\-\s]', '', title)
+
+        title = title.strip()
+
+        # Remove trailing hyphen if present
+        if title and title[-1] == '-':
+            title = title[:-1]
+
+        return title.strip()

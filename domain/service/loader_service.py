@@ -37,26 +37,25 @@ class LoaderService:
             return html
 
         html = loader_client.download_page(page_url)
-        if html and (validation is not None and validation(page_url, html)):
+        if html and (validation is  None or validation(page_url, html)):
             cache_page.save(page_url, html)
             return html
 
         print('Error!')
         return None
 
-    def download_and_cache_image(self, image_url: str, title_orig: str) -> str:
+    def download_and_cache_image(self, image_url: str, title_clean: str) -> str:
         """Downloads and caches an image, using the title for filename generation.
 
         Args:
             image_url: URL of the image to download
-            title_orig: Original title to use as a base for the filename
+            title_clean: Clean title to use as a filename
 
         Returns:
             Name of the cached image file
         """
-        clean_title = self._clean_title_for_filename(title_orig)
         ext = self._get_image_extension(image_url)
-        image_name = f"{clean_title}{ext}"
+        image_name = f"{title_clean}{ext}"
 
         # Check if an image already exists in the cache
         if cache_image.get(image_name) is None:
@@ -67,20 +66,6 @@ class LoaderService:
             print(f'Image already in cache: {image_name}')
 
         return image_name
-
-    def _clean_title_for_filename(self, title: str) -> str:
-        """Sanitizes a title for use as a filename.
-
-        Args:
-            title: Original title to sanitize
-
-        Returns:
-            Sanitized string safe for use as a filename
-        """
-        # Replace colons with hyphens
-        title = title.replace(':', '-')
-        # Keep only allowed characters
-        return re.sub(r'[^\w\d\(\)\.\-\s]', '', title)
 
     def _get_image_extension(self, image_url: str) -> str:
         """Extracts file extension from an image URL.
