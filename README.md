@@ -1,37 +1,74 @@
 # Notion Library
 
-Allows you to export data from livelib site to you Notion database
+A desktop application that allows you to export book data from livelib.ru to your Notion database and Obsidian vault. The app extracts book metadata including title, authors, publisher, year, pages, ISBN, and cover image, making it easy to build and maintain your digital book collection.
 
+## Features
 
-### Installation
+- Extract book metadata from livelib.ru URLs
+- Preview book information before saving
+- Export to Notion database with customizable properties
+- Save as Markdown files in Obsidian with proper formatting
+- Cache book covers locally for faster access
 
-Copy config example and fill settings for your Notion access
+## Requirements
+
+- Python 3.8+
+- Required packages: requests, beautifulsoup4, customtkinter, notionhq_client, python-dotenv
+
+## Installation
+
+1. Clone the repository
+2. Install dependencies: `pip install -r requirements.txt`
+3. Set up configuration:
+
+### Notion Configuration
+
+Create a `.env` file in the project root with your Notion API credentials:
 
 ```bash
-cp config/config.ini.example config/config.ini
+# Notion settings
+NOTION_API_KEY="your_notion_api_key"
+NOTION_DATABASE_ID="your_notion_database_id"
+
+# Obsidian paths (optional)
+BOOKS_DIR="PATH_TO_YOUR_LIBRARY\\@Books"
+COVERS_DIR="PATH_TO_YOUR_LIBRARY\\_covers"
 ```
 
-### Notion Book base properties
+Alternatively, you can create a `config/config.ini` file based on the example:
 
 ```ini
-Name : title
-cover : url
+[NOTION]
+api_token = YOUR_NOTION_TOKEN
+database_id = YOUR_DATABASE_ID
 ```
 
-### Notion Book additional properties
+### Notion Database Setup
 
+Your Notion database should have these properties:
+
+#### Base properties (required)
 ```ini
-Publish year : number
-Publishing House : select
-ISBN : rich_text
-Link : url
+Name : title       # Book title
+cover : url        # URL to book cover image
 ```
 
-### Usage
-
-Just set book_id in the main.py script and run it
-
-```regexp
-https://www.livelib.ru/book/1003006746-sovershennyj-kod-masterklass-stiv-makkonnell
-                            |-- id --|
+#### Additional properties (recommended)
+```ini
+Publish year : number      # Year of publication
+Publishing House : select  # Publisher name as a select option
+ISBN : rich_text           # Book ISBN number
+Link : url                 # URL to the book page
 ```
+
+## Usage
+
+1. Run the application:
+```bash
+python src/application/main_window.py
+```
+
+2. Enter a livelib.ru book URL in the input field
+3. Click "Preview" to see the extracted book information
+4. Review the data and book cover
+5. Click "Save to Notes" to export the book to Notion and/or Obsidian

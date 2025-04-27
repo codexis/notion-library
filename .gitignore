@@ -1,4 +1,6 @@
 .env
 .idea
-cache
+build/
+dist/
+src/infrastructure/storage/
 config/config.ini

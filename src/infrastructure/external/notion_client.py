@@ -1,21 +1,19 @@
 """ Module providing a Notion API methods """
 # @see API Documentation: https://developers.notion.com/reference/retrieve-a-database
 # @see API Integrations: https://www.notion.so/my-integrations
+
+import os
 import requests
 
 
-class Notion:
+class NotionClient:
     """Notion API class"""
 
     API_URL = "https://api.notion.com"
     API_VERSION = "2022-06-28"
 
-    api_token = ''
-    database_id = ''
-
-    def set_config(self):
-        """setting a config"""
-
+    def __init__(self):
+        super().__init__()
         self.api_token = os.environ.get('NOTION_API_KEY', None)
         self.database_id = os.environ.get('NOTION_DATABASE_ID', None)
 
