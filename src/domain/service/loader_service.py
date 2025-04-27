@@ -40,7 +40,7 @@ class LoaderService:
             cache_page.save(page_url, html)
             return html
 
-        print('Error!')
+        logging.error(f"Failed to retrieve or validate page content for URL: {page_url}")
         return None
 
     def download_and_cache_image(self, image_url: str, title_clean: str) -> str:
