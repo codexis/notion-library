@@ -9,12 +9,12 @@ Classes:
     LibraryService: Core service for book data retrieval and management.
 """
 import re
-from domain.service.loader_service import LoaderService
-from infrastructure.cache.cache_image import CacheImage
-from infrastructure.external.livelib_client import LiveLibClient
-from infrastructure.external.mif_client import MifClient
-from infrastructure.external.notion_client import NotionClient
-from infrastructure.external.obsidian_client import ObsidianClient
+from src.domain.service.loader_service import LoaderService
+from src.infrastructure.cache.cache_image import CacheImage
+from src.infrastructure.external.livelib_client import LiveLibClient
+from src.infrastructure.external.mif_client import MifClient
+from src.infrastructure.external.notion_client import NotionClient
+from src.infrastructure.external.obsidian_client import ObsidianClient
 
 cache_image = CacheImage()
 loader_service = LoaderService()

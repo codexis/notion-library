@@ -8,7 +8,7 @@ Classes:
     LoaderClient: Handles web content downloading with error management.
 """
 import requests
-from domain.exception.library_exceptions import DownloadError
+from src.domain.exception.library_exceptions import DownloadError
 
 
 class LoaderClient:

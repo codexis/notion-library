@@ -9,17 +9,17 @@ Classes:
 """
 import os
 import shutil
-from domain.exception.library_exceptions import DirNotExists
+from src.domain.exception.library_exceptions import DirNotExists
 
 
 class ObsidianClient:
     """Client for creating and managing book notes in Obsidian format."""
 
-    BOOKS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../books")
-    COVERS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../covers")
+    BOOKS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../storage/books")
+    COVERS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../storage/covers")
     BOOK_TEMPLATE_FILE_PATH = os.path.join(
         os.path.dirname(os.path.abspath(__file__)),
-        "../../template",
+        "../template",
         "book.md"
     )
 

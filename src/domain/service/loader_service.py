@@ -9,10 +9,9 @@ Classes:
     LoaderService: Handles web content loading and caching operations.
 """
 import os
-import re
-from infrastructure.cache.cache_page import CachePage
-from infrastructure.cache.cache_image import CacheImage
-from infrastructure.external.loader_client import LoaderClient
+from src.infrastructure.cache.cache_page import CachePage
+from src.infrastructure.cache.cache_image import CacheImage
+from src.infrastructure.external.loader_client import LoaderClient
 
 cache_page = CachePage()
 cache_image = CacheImage()

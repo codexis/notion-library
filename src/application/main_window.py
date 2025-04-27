@@ -3,8 +3,8 @@ import json
 import customtkinter as ctk
 from dotenv import load_dotenv
 from PIL import Image, ImageTk
-from infrastructure.cache.cache_image import CacheImage
-from domain.service.library_service import LibraryService
+from src.infrastructure.cache.cache_image import CacheImage
+from src.domain.service.library_service import LibraryService
 
 
 load_dotenv()
@@ -30,7 +30,8 @@ class App(ctk.CTk):
         self.link_label.grid(row=1, column=0, sticky="nsew")
 
         self.link_entry = ctk.CTkEntry(master=self, width=700)
-        self.link_entry.insert("0", "https://www.mann-ivanov-ferber.ru/catalog/product/kak-delat-poleznye-zametki/")
+        # self.link_entry.insert("0", "https://www.mann-ivanov-ferber.ru/catalog/product/kak-delat-poleznye-zametki/")
+        self.link_entry.insert("0", "https://www.livelib.ru/book/1000455527-kak-rabotat-po-4-chasa-v-nedelyu-i-pri-etom-ne-torchat-v-ofise-ot-zvonka-do-zvonka-zhit-gde-ugodno-i-bogatet-timoti-ferris")
         self.link_entry.grid(row=1, column=1, sticky="nsew")
 
         self.grab_button = ctk.CTkButton(self, command=self.grab_data, text="Preview")

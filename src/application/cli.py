@@ -1,5 +1,5 @@
 """ Console Python script of the Library Project """
-from domain.service.library_service import LibraryService
+from src.domain.service.library_service import LibraryService
 
 library = LibraryService()
 
