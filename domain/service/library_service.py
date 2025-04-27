@@ -44,9 +44,15 @@ class LibraryService:
         if mif.check_page_url(book_link_url):
             html = loader_service.get_book_page(book_link_url, mif.validate)
             book_data = mif.parse_book_data_from_html(html)
+
         elif livelib.check_page_url(book_link_url):
             html = loader_service.get_book_page(book_link_url, None)
             book_data = livelib.get_book_data(html)
+
+        # ToDo
+            # Add Google Books APIs
+            # https://developers.google.com/books/docs/v1/using?hl=ru
+
         else:
             return None
 

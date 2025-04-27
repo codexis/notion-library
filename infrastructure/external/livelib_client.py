@@ -8,16 +8,16 @@ class LiveLibClient:
     API_URL = "https://www.livelib.ru"
 
     def get_book_data(self, html: str):
-        """getting a book info by book_id"""
+        """getting book info by book_id"""
 
         soup = BeautifulSoup(html, 'html.parser')
 
         title = soup.find('h1', {
-            'class': 'bc__book-title'
+            'class': 'bc-header__book-title'
         }).text
 
         author = soup.find('a', {
-            'class': 'bc-author__link'
+            'class': 'bc-header__book-author-link'
         }).text
 
         publishing_house = soup.find('a', {
@@ -25,11 +25,9 @@ class LiveLibClient:
             'href': lambda href: href and "publisher" in href
         }).text
 
-        image_url = soup.find('div', {
-            'class': 'bc-menu__image-wrapper',
-        }).attrs['onclick']
-        image_url = image_url.split("event, '")[1]
-        image_url = image_url.split("', '")[0]
+        image_url = soup.find('img', {
+            'class': 'book-cover__image',
+        }).attrs['src']
 
         isbn = ''
         year = ''
@@ -43,7 +41,7 @@ class LiveLibClient:
 
         return {
             'title': title,
-            'author': author,
+            'authors': [author],
             'publishing_house': publishing_house,
             'year': year,
             'isbn': isbn,
