@@ -49,9 +49,8 @@ class LibraryService:
             html = loader_service.get_book_page(book_link_url, None)
             book_data = livelib.get_book_data(html)
 
-        # ToDo
-            # Add Google Books APIs
-            # https://developers.google.com/books/docs/v1/using?hl=ru
+        # Add Google Books APIs
+        # https://developers.google.com/books/docs/v1/using?hl=ru
 
         else:
             return None

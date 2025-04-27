@@ -52,22 +52,10 @@ class MifClient:
         data_json = json.loads(data_text)
         product = data_json['props']['pageProps']['storeSnapshot']['productCardStore']['product']
 
-        title_ru = product['baseData']['title']
-        slogan_ru = product['baseData']['titleInList']
-        authors_ru_data = product['baseData']['authors']
+        # Parse base parameters to extract title, authors and slogan
+        parsed_based_params = self._parse_base_parameters(product)
 
-        if product['dataInOriginalLanguage']:
-            title = product['dataInOriginalLanguage']['title']
-            slogan = product['dataInOriginalLanguage']['titleInList']
-            authors_data = product['dataInOriginalLanguage']['authors']
-        else:
-            title = title_ru
-            slogan = slogan_ru
-            authors_data = authors_ru_data
-
-        authors = [author['name'] for author in authors_data]
-
-        # Parse release parameters to extract year, pages, and ISBN
+        # Parse release parameters to extract year, pages and ISBN
         release_parameters = product['releaseParameters']
         parsed_release_params = self._parse_release_parameters(release_parameters)
 
@@ -88,16 +76,54 @@ class MifClient:
         # author = div_cover.find_all('a')[1].text
 
         return {
-            'title': title,
-            'title_ru': title_ru if title_ru != title else None,
-            'authors': authors,
-            'slogan': slogan,
-            'slogan_ru': slogan_ru,
+            'title': parsed_based_params['title'],
+            'title_ru': parsed_based_params['title_ru'],
+            'authors': parsed_based_params['authors'],
+            'slogan': parsed_based_params['slogan'],
+            'slogan_ru': parsed_based_params['slogan_ru'],
             'publishing_house': self.PUBLISHER_NAME,
             'year': parsed_release_params['year'],
             'pages': parsed_release_params['pages'],
             'isbn': parsed_release_params['isbn'],
             'image_url': image_url,
+        }
+
+    def _parse_base_parameters(self, product: dict) -> dict:
+        """Extract base parameters from book HTML.
+
+        Args:
+            product (dict): HTML with book base product information.
+
+        Returns:
+            dict: Publication details with keys:
+                - title: Title
+                - title_ru: Translated title (None if same as original)
+                - authors: list of all authors
+                - slogan: Subtitle
+                - slogan_ru: Translated subtitle
+        """
+
+        title_ru = product['baseData']['title']
+        slogan_ru = product['baseData']['titleInList']
+        authors_ru_data = product['baseData']['authors']
+
+        if product['dataInOriginalLanguage']:
+            title = product['dataInOriginalLanguage']['title']
+            slogan = product['dataInOriginalLanguage']['titleInList']
+            authors_data = product['dataInOriginalLanguage']['authors']
+        else:
+            title = title_ru
+            slogan = slogan_ru
+            authors_data = authors_ru_data
+
+        authors = [author['name'] for author in authors_data]
+
+        return {
+            'title': title,
+            'title_ru': title_ru if title_ru != title else None,
+            'authors': authors,
+            'slogan': slogan,
+            'slogan_ru': slogan_ru,
         }
 
     def _parse_release_parameters(self, release_parameters: str) -> dict:

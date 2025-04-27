@@ -73,7 +73,7 @@ class ObsidianClient:
                 shutil.copy2(image_path, cover_file_path)
 
             return f"Book saved to {book_file_path}"
-        except Exception as e:
+        except OSError as e:
             return f"Error saving file: {e}"
 
     def _build_authors(self, book_data) -> str:

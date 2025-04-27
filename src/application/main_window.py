@@ -30,7 +30,7 @@ class App(ctk.CTk):
         self.link_label.grid(row=1, column=0, sticky="nsew")
 
         self.link_entry = ctk.CTkEntry(master=self, width=700)
-        self.link_entry.insert("0", "https://www.mann-ivanov-ferber.ru/catalog/product/kak-delat-poleznye-zametki/")
+        self.link_entry.insert("0", "Enter link to export here...")
         self.link_entry.grid(row=1, column=1, sticky="nsew")
 
         self.grab_button = ctk.CTkButton(self, command=self.grab_data, text="Preview")
@@ -103,7 +103,9 @@ class App(ctk.CTk):
 
         # Add authors
         if 'authors' in book_data and book_data['authors']:
-            authors = ", ".join(book_data['authors']) if isinstance(book_data['authors'], list) else book_data['authors']
+            authors = ", ".join(book_data['authors']) \
+                if isinstance(book_data['authors'], list) \
+                else book_data['authors']
             table += f"Author(s): {authors}\n"
 
         # Add a publishing house
@@ -153,7 +155,14 @@ class App(ctk.CTk):
                     self.image_label.image = photo
                 else:
                     self.image_label = ctk.CTkLabel(master=self, text="", image=photo)
-                    self.image_label.grid(row=3, column=0, columnspan=4, sticky="nsew", padx=20, pady=20)
+                    self.image_label.grid(
+                        row=3,
+                        column=0,
+                        columnspan=4,
+                        sticky="nsew",
+                        padx=20,
+                        pady=20
+                    )
                     self.image_label.image = photo
             except Exception as e:
                 print(f"Error displaying image: {e}")
