@@ -8,6 +8,7 @@ note-taking applications.
 Classes:
     LibraryService: Core service for book data retrieval and management.
 """
+import os
 import re
 from src.domain.service.loader_service import LoaderService
 from src.infrastructure.cache.cache_image import CacheImage
@@ -97,7 +98,10 @@ class LibraryService:
             str: URL of the created Notion page
         """
 
-        notion = NotionClient()
+        notion = NotionClient(
+            os.environ.get('NOTION_API_KEY', None),
+            os.environ.get('NOTION_DATABASE_ID', None)
+        )
 
         return notion.create_book_edition_page(book_data)
 

@@ -2,7 +2,6 @@
 # @see API Documentation: https://developers.notion.com/reference/retrieve-a-database
 # @see API Integrations: https://www.notion.so/my-integrations
 
-import os
 import requests
 
 
@@ -12,15 +11,18 @@ class NotionClient:
     API_URL = "https://api.notion.com"
     API_VERSION = "2022-06-28"
 
-    def __init__(self):
+    def __init__(self, api_token, database_id):
         super().__init__()
-        self.api_token = os.environ.get('NOTION_API_KEY', None)
-        self.database_id = os.environ.get('NOTION_DATABASE_ID', None)
+        self.api_token = api_token
+        self.database_id = database_id
 
     def create_book_edition_page(self, data: dict):
         """creating a book edition"""
 
-        return self.create_page({
+        return self.create_page(self.format_data(data))
+
+    def format_data(self, data: dict) -> dict:
+        return {
             "parent": {"database_id": self.database_id},
             "cover": {
                 "external": {
@@ -59,7 +61,7 @@ class NotionClient:
                     "url": data['link']
                 },
             }
-        })
+        }
 
     def create_page(self, payload: dict):
         """creating a page"""
