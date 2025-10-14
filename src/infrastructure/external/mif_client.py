@@ -9,7 +9,7 @@ Classes:
 """
 import json
 import re
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 from src.domain.model.book import Book
 
 
@@ -33,9 +33,13 @@ class MifClient:
 
         soup = BeautifulSoup(html, 'html.parser')
 
-        data_text = soup.find('script', {
+        data_tag = soup.find('script', {
             'id': '__NEXT_DATA__'
-        }).text
+        })
+        if isinstance(data_tag, Tag):
+            data_text = data_tag.text
+        else:
+            return None
 
         data_json = json.loads(data_text)
         product = data_json['props']['pageProps']['storeSnapshot']['productCardStore']['product']
@@ -184,19 +188,18 @@ class MifClient:
     def validate(self, book_link_url: str, html_content: str) -> bool:
         """Validate if the HTML content is a valid MIF book page.
 
-        Args:
-            book_link_url (str): URL of the book page to validate.
-            html_content (str): HTML content of the page to validate.
-
         Returns:
-            bool: True if the content is valid or if URL is not from MIF, False otherwise.
+            bool: True if the content is valid or if the URL is not from MIF, False otherwise.
         """
         if self.check_page_url(book_link_url):
             soup = BeautifulSoup(html_content, 'html.parser')
-            divs = soup.find('div', {
-                'data-fixed-menu-selector': 'COVER'
-            }).findAll('div')
 
-            return divs is not None
+            divs_tag = soup.find('div', {
+                'data-fixed-menu-selector': 'COVER'
+            })
+            if isinstance(divs_tag, Tag):
+                return divs_tag.findAll('div') is not None
+
+            return False
 
         return True
