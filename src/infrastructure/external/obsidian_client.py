@@ -10,6 +10,7 @@ Classes:
 import os
 import shutil
 from src.domain.exception.library_exceptions import DirNotExists
+from src.domain.model.book import Book
 
 
 class ObsidianClient: # pylint: disable=too-few-public-methods
@@ -23,16 +24,18 @@ class ObsidianClient: # pylint: disable=too-few-public-methods
         "book.md"
     )
 
-    def save_to_notes(self, book_data: dict, image_path: str) -> str:
+    def save_to_notes(self, book: Book, image_path: str | None) -> str:
         """Saves book data to an Obsidian-formatted Markdown file and copies the cover image.
 
         Args:
-            book_data: Dictionary containing book metadata (title, authors, year, pages, etc.)
+            book: Dictionary containing book metadata (title, authors, year, pages, etc.)
             image_path: Path to the book cover image file
 
         Returns:
             String message indicating success or error details
         """
+
+        template_content = ''
 
         # Read a template file
         try:
@@ -43,23 +46,23 @@ class ObsidianClient: # pylint: disable=too-few-public-methods
 
         # Replace template variables with actual values
         replacements = {
-            "{{authors}}": self._build_authors(book_data),
-            "{{aliases}}": self._build_aliases(book_data),
-            "{{year}}": str(book_data.get('year', '')),
-            "{{pages}}": str(book_data.get('pages', '')),
-            "{{image_name}}": book_data.get('image_name', ''),
-            "{{slogan}}": book_data.get('slogan_ru', ''),
-            "{{book_page_url}}": book_data.get('link', '')
+            "{{authors}}": self._build_authors(book),
+            "{{aliases}}": self._build_aliases(book),
+            "{{year}}": str(book.year),
+            "{{pages}}": str(book.pages),
+            "{{image_name}}": book.image_name,
+            "{{slogan}}": book.slogan_ru,
+            "{{book_page_url}}": book.link
         }
 
         for placeholder, value in replacements.items():
-            template_content = template_content.replace(placeholder, value)
+            template_content = template_content.replace(placeholder, str(value))
 
         try:
-            book_file_path = self._build_book_file_path(book_data)
+            book_file_path = self._build_book_file_path(book)
             cover_file_path = None
-            if 'image_name' in book_data and book_data['image_name']:
-                cover_file_path = self._build_cover_file_path(book_data)
+            if book.image_name:
+                cover_file_path = self._build_cover_file_path(book)
         except DirNotExists as e:
             return str(e)
 
@@ -76,43 +79,33 @@ class ObsidianClient: # pylint: disable=too-few-public-methods
         except OSError as e:
             return f"Error saving file: {e}"
 
-    def _build_authors(self, book_data) -> str:
+    def _build_authors(self, book: Book) -> str:
         """Formats the list of authors in Obsidian wiki-link format.
-
-        Args:
-            book_data: Dictionary containing book metadata including 'authors' list
 
         Returns:
             Formatted string with authors as Obsidian wiki-links or empty string if no authors
         """
-        return "\n  - \"[[" + "]]\"\n  - \"[[".join(book_data.get('authors', [])) + "]]\"" \
-            if book_data.get('authors', []) \
+        return "\n  - \"[[" + "]]\"\n  - \"[[".join(book.authors) + "]]\"" \
+            if book.authors \
             else ""
 
-    def _build_aliases(self, book_data) -> str:
+    def _build_aliases(self, book: Book) -> str:
         """Formats the book's alternative title as an alias.
-
-        Args:
-            book_data: Dictionary containing book metadata including the 'title_ru' field
 
         Returns:
             Formatted string with the Russian title as an alias or empty string if not available
         """
-        return "\n  - \"" + book_data.get('title_ru', '') + "\"" \
-            if book_data.get('title_ru', []) \
+        return "\n  - \"" + book.title_ru + "\"" \
+            if book.title_ru \
             else ""
 
-    def _build_book_file_path(self, book_data) -> str:
+    def _build_book_file_path(self, book: Book) -> str:
         """Constructs the file path for the book's Markdown file.
-
-        Args:
-            book_data: Dictionary containing book metadata including 'title_clean'
 
         Returns:
             Full path to the Markdown file for the book
         """
-        title_clean = book_data.get('title_clean', 'unknown')
-        filename = f"{title_clean}.md"
+        filename = f"{book.title_clean}.md"
 
         books_dir = self._get_books_dir()
 
@@ -131,10 +124,10 @@ class ObsidianClient: # pylint: disable=too-few-public-methods
 
         return books_dir
 
-    def _build_cover_file_path(self, book_data) -> str:
+    def _build_cover_file_path(self, book: Book) -> str:
         """Constructs the file path for the book's Markdown file."""
         covers_dir = self._get_covers_dir()
-        return os.path.join(covers_dir, book_data['image_name'])
+        return os.path.join(covers_dir, book.image_name)
 
     def _get_covers_dir(self) -> str:
         """Get the path to the covers directory from the environment variable or default."""

@@ -1,5 +1,6 @@
 """ Module providing a livelib parser methods """
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
+from src.domain.model.book import Book
 
 
 class LiveLibClient:
@@ -7,47 +8,85 @@ class LiveLibClient:
 
     API_URL = "https://www.livelib.ru"
 
-    def get_book_data(self, html: str):
+    soup: BeautifulSoup
+
+    def get_book_data(self, html: str) -> Book:
         """getting book info by book_id"""
 
-        soup = BeautifulSoup(html, 'html.parser')
+        self.soup = BeautifulSoup(html, 'html.parser')
 
-        title = soup.find('h1', {
+        return Book(
+            title=self.get_title(),
+            title_ru=None,
+            authors=[self.get_author()],
+            slogan=None,
+            slogan_ru=None,
+            publishing_house=self.get_publishing_house(),
+            year=self.get_year(),
+            pages=None,
+            isbn=self.get_isbn(),
+            image_url=self.get_image_url(),
+        )
+
+    def get_title(self) -> str:
+        """Parse title from HTML"""
+        title_tag = self.soup.find('h1', {
             'class': 'bc-header__book-title'
-        }).text
+        })
+        if isinstance(title_tag, Tag):
+            return title_tag.text
 
-        author = soup.find('a', {
+        return ''
+
+    def get_author(self) -> str:
+        """Parse author from HTML"""
+        author_tag = self.soup.find('a', {
             'class': 'bc-header__book-author-link'
-        }).text
+        })
+        if isinstance(author_tag, Tag):
+            return author_tag.text
 
-        publishing_house = soup.find('a', {
+        return ''
+
+    def get_publishing_house(self) -> str:
+        """Parse publishing house from HTML"""
+        publishing_house_tag = self.soup.find('a', {
             'class': 'bc-edition__link',
             'href': lambda href: href and "publisher" in href
-        }).text
+        })
+        if isinstance(publishing_house_tag, Tag):
+            return publishing_house_tag.text
 
-        image_url = soup.find('img', {
+        return ''
+
+    def get_image_url(self) -> str:
+        """Parse image url from HTML"""
+        image_tag = self.soup.find('img', {
             'class': 'book-cover__image',
-        }).attrs['src']
+        })
+        if isinstance(image_tag, Tag):
+            return image_tag.attrs['src']
 
-        isbn = ''
-        year = ''
+        return ''
 
-        p_all = soup.findAll('p')
+    def get_isbn(self) -> str | None:
+        """Parse ISBN from HTML"""
+        p_all = self.soup.findAll('p')
         for p in p_all:
             if "ISBN" in p.text:
-                isbn = p.text.split('ISBN: ')[1]
-            elif "Год издания" in p.text:
-                year = p.text.split('Год издания: ')[1]
+                return p.text.split('ISBN: ')[1]
 
-        return {
-            'title': title,
-            'authors': [author],
-            'publishing_house': publishing_house,
-            'year': year,
-            'isbn': isbn,
-            'image_url': image_url,
-        }
+        return None
+
+    def get_year(self) -> int | None:
+        """Parse year from HTML"""
+        p_all = self.soup.findAll('p')
+        for p in p_all:
+            if "Год издания" in p.text:
+                return int(p.text.split('Год издания: ')[1])
+
+        return None
 
     def check_page_url(self, book_link_url: str) -> bool:
-        """check book_link_url is a mif page"""
+        """Check book_link_url is a mif page"""
         return book_link_url.startswith(self.API_URL)

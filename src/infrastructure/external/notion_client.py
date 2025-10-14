@@ -1,8 +1,9 @@
-""" Module providing a Notion API methods """
+""" Module providing Notion API methods """
 # @see API Documentation: https://developers.notion.com/reference/retrieve-a-database
 # @see API Integrations: https://www.notion.so/my-integrations
 
 import requests
+from src.domain.model.book import Book
 
 
 class NotionClient:
@@ -16,17 +17,19 @@ class NotionClient:
         self.api_token = api_token
         self.database_id = database_id
 
-    def create_book_edition_page(self, data: dict):
-        """creating a book edition"""
+    def create_book_edition_page(self, book: Book):
+        """Create a book edition"""
 
-        return self.create_page(self.format_data(data))
+        return self.create_page(self.format_book_data(book))
 
-    def format_data(self, data: dict) -> dict:
+    def format_book_data(self, book: Book) -> dict:
+        """Format book data for API request"""
+
         return {
             "parent": {"database_id": self.database_id},
             "cover": {
                 "external": {
-                    "url": data['image_url']
+                    "url": book.image_url
                 }
             },
             "properties": {
@@ -34,17 +37,17 @@ class NotionClient:
                     "title": [
                         {
                             "text": {
-                                "content": data['title']
+                                "content": book.title
                             }
                         }
                     ]
                 },
                 "Publish year": {
-                    "number": int(data['year'])
+                    "number": book.year
                 },
                 "Publishing House": {
                     "select": {
-                        "name": data['publishing_house']
+                        "name": book.publishing_house
                     }
                 },
                 "ISBN": {
@@ -52,25 +55,25 @@ class NotionClient:
                         {
                             "type": "text",
                             "text": {
-                                "content": str(data['isbn'])
+                                "content": book.isbn
                             }
                         }
                     ]
                 },
                 "Link": {
-                    "url": data['link']
+                    "url": book.link
                 },
             }
         }
 
     def create_page(self, payload: dict):
-        """creating a page"""
+        """Create a page"""
 
         create_url = self.API_URL + "/v1/pages"
         return requests.post(create_url, headers=self.get_headers(), json=payload, timeout=10)
 
     def get_headers(self):
-        """constructing headers for API-request"""
+        """Construct headers for API request"""
 
         return {
             "Authorization": "Bearer " + self.api_token,

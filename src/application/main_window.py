@@ -13,6 +13,7 @@ import json
 import customtkinter as ctk
 from dotenv import load_dotenv
 from PIL import Image
+from src.domain.model.book import Book
 from src.infrastructure.cache.cache_image import CacheImage
 from src.domain.service.library_service import LibraryService
 
@@ -37,7 +38,7 @@ class App(ctk.CTk):
         super().__init__()
         self.geometry("1100x1000")
         self.title(self.app_title)
-        self.current_book_data = None
+        self.current_book = None
 
         # Use composition for UI elements
         self.ui = AppUI(self)
@@ -47,12 +48,12 @@ class App(ctk.CTk):
         book_link = str(self.ui.link_entry.get())
 
         print(f"book_link: {book_link}")
-        book_data = library.get_book(book_link)
+        book = library.get_book(book_link)
 
-        status_msg = json.dumps(book_data, indent=2, ensure_ascii=False)
+        status_msg = json.dumps(book, indent=2, ensure_ascii=False)
         self.ui.status_label.configure(text=status_msg)
 
-        res = library.export_book(book_data)
+        res = library.export_book(book)
         result_json = json.loads(res.text)
         status_msg += "\n\ncode: " + str(res.status_code)
         status_msg += "\nresult: " + json.dumps(result_json, indent=2, ensure_ascii=False)
@@ -62,28 +63,27 @@ class App(ctk.CTk):
     def grab_data(self):
         """Retrieve and display book data when the preview button is clicked."""
         book_link = str(self.ui.link_entry.get())
-
         print(f"book_link: {book_link}")
-        book_data = library.get_book(book_link)
 
-        if book_data:
+        book = library.get_book(book_link)
+        if book is not None:
             # Store the book data for later use
-            self.current_book_data = book_data
+            self.current_book = book
 
             # Format book data as a table
-            table = self.format_book_data_as_table(book_data)
+            table = self.format_book_data_as_table(book)
 
             # Display the table
             self.ui.status_label.configure(text=table)
 
             # Display the book cover image if available
-            if 'image_name' in book_data and book_data['image_name']:
-                self.display_book_image(book_data['image_name'])
+            if book.image_name:
+                self.display_book_image(book.image_name)
 
             # Show the Save to Notes button
             self.ui.save_button.grid()
 
-            print(f"Previewed book: {book_data.get('title_clean', 'Unknown title')}")
+            print(f"Previewed book: {book.title_clean}")
         else:
             self.ui.status_label.configure(
                 text="Could not retrieve book data. Please check the URL."
@@ -91,49 +91,42 @@ class App(ctk.CTk):
             # Hide the Save to Notes button if no book data
             self.ui.save_button.grid_remove()
 
-    def format_book_data_as_table(self, book_data):
-        """Format book data as a readable text table.
-
-        Args:
-            book_data (dict): Dictionary containing book information
-
-        Returns:
-            str: Formatted string representation of book data
-        """
+    def format_book_data_as_table(self, book: Book) -> str:
+        """Format book data as a readable text table."""
         table = f"Book Information:\n{'=' * 50}\n"
 
         # Add title
-        if 'title' in book_data:
-            table += f"Title: {book_data['title']}\n"
-        if 'title_clean' in book_data:
-            table += f"Title (clean): {book_data['title_clean']}\n"
+        if book.title != '':
+            table += f"Title: {book.title}\n"
+        if book.title_clean != '':
+            table += f"Title (clean): {book.title_clean}\n"
 
         # Add authors
-        if 'authors' in book_data and book_data['authors']:
-            authors = ", ".join(book_data['authors']) \
-                if isinstance(book_data['authors'], list) \
-                else book_data['authors']
+        if book.authors:
+            authors = ", ".join(book.authors) \
+                if isinstance(book.authors, list) \
+                else book.authors
             table += f"Author(s): {authors}\n"
 
         # Add a publishing house
-        if 'publishing_house' in book_data:
-            table += f"Publisher: {book_data['publishing_house']}\n"
+        if book.publishing_house:
+            table += f"Publisher: {book.publishing_house}\n"
 
         # Add year
-        if 'year' in book_data and book_data['year']:
-            table += f"Year: {book_data['year']}\n"
+        if book.year:
+            table += f"Year: {book.year}\n"
 
         # Add pages
-        if 'pages' in book_data and book_data['pages']:
-            table += f"Pages: {book_data['pages']}\n"
+        if book.pages:
+            table += f"Pages: {book.pages}\n"
 
         # Add ISBN
-        if 'isbn' in book_data and book_data['isbn']:
-            table += f"ISBN: {book_data['isbn']}\n"
+        if book.isbn:
+            table += f"ISBN: {book.isbn}\n"
 
         # Add a link
-        if 'link' in book_data:
-            table += f"Link: {book_data['link']}\n"
+        if book.link:
+            table += f"Link: {book.link}\n"
 
         return table
 

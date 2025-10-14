@@ -10,6 +10,7 @@ Classes:
 import json
 import re
 from bs4 import BeautifulSoup
+from src.domain.model.book import Book
 
 
 class MifClient:
@@ -23,24 +24,11 @@ class MifClient:
     PUBLISHER_NAME = 'МИФ'
     API_URL = "https://www.mann-ivanov-ferber.ru"
 
-    def parse_book_data_from_html(self, html: str) -> dict:
+    def parse_book_data_from_html(self, html: str) -> Book | None:
         """Extract structured book information from MIF page HTML.
 
         Args:
             html (str): HTML content of a MIF book page.
-
-        Returns:
-            dict: Book information with keys:
-                - title: Original language title
-                - title_ru: Russian title (None if same as original)
-                - authors: List of author names
-                - slogan: Original language subtitle
-                - slogan_ru: Russian subtitle
-                - publishing_house: Publisher name ('МИФ')
-                - year: Publication year
-                - pages: Page count
-                - isbn: ISBN number
-                - image_url: Cover image URL
         """
 
         soup = BeautifulSoup(html, 'html.parser')
@@ -75,18 +63,18 @@ class MifClient:
         # title = div_cover.find_all('h1')[0].text
         # author = div_cover.find_all('a')[1].text
 
-        return {
-            'title': parsed_based_params['title'],
-            'title_ru': parsed_based_params['title_ru'],
-            'authors': parsed_based_params['authors'],
-            'slogan': parsed_based_params['slogan'],
-            'slogan_ru': parsed_based_params['slogan_ru'],
-            'publishing_house': self.PUBLISHER_NAME,
-            'year': parsed_release_params['year'],
-            'pages': parsed_release_params['pages'],
-            'isbn': parsed_release_params['isbn'],
-            'image_url': image_url,
-        }
+        return Book(
+            title = parsed_based_params['title'],
+            title_ru = parsed_based_params['title_ru'],
+            authors = parsed_based_params['authors'],
+            slogan = parsed_based_params['slogan'],
+            slogan_ru = parsed_based_params['slogan_ru'],
+            publishing_house = self.PUBLISHER_NAME,
+            year = parsed_release_params['year'],
+            pages = parsed_release_params['pages'],
+            isbn = parsed_release_params['isbn'],
+            image_url = image_url,
+        )
 
     def _parse_base_parameters(self, product: dict) -> dict:
         """Extract base parameters from book HTML.
